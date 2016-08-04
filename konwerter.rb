@@ -3,27 +3,42 @@
 
 require 'csv'
 
-files=Dir['*.csv']
-unless files.length == 0
-  files.each do |file|
-    p file
-    CSV.read(file, {
-                     #  :encoding => 'ISO-8859-1:UTF-8',
-                     :col_sep => '@',
-                     :row_sep => "\n",
-                     :quote_char => '"',
-                     :headers => true,
-                     :header_converters => :symbol,
-                 }).each do |row|
-      r = row.to_h
-      puts "## Pytanie #{r[:lp]} [#{r[:numer]}]"
-      puts "`#{r[:pytanie]}`"
-      puts "* **#{r[:odp1]}**"
-      puts "* #{r[:odp2]}"
-      puts "* #{r[:odp3]}"
-      puts "* #{r[:odp4]}"
-      puts ""
+pytania=Dir['*.csv']
 
+unless pytania.length == 0
+  pytania.each do |file|
+
+    puts "Przetwarzam: #{file}"
+
+    begin
+
+      md = File.open("#{file}.md", "w")
+
+      CSV.read(file, {
+                       #  :encoding => 'ISO-8859-1:UTF-8',
+                       :col_sep => '@',
+                       :row_sep => "\n",
+                       :quote_char => '"',
+                       :headers => true,
+                       :header_converters => :symbol,
+                   }).each do |row|
+        r = row.to_h
+
+        md.write("## Pytanie #{r[:lp]} [#{r[:numer]}]\n")
+        md.write("`#{r[:pytanie]}`\n")
+        md.write("* **#{r[:odp1]}**\n")
+        md.write("* #{r[:odp2]}\n")
+        md.write("* #{r[:odp3]}\n")
+        md.write("* #{r[:odp4]}\n")
+        md.write("\n")
+
+      end
+
+    rescue IOError => e
+      puts e
+    ensure
+      md.close unless md.nil?
     end
+
   end
 end
