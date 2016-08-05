@@ -24,7 +24,7 @@ unless pytania.length == 0
                    }).each do |row|
         r = row.to_h
 
-        md.write("## Pytanie #{r[:lp]} [#{r[:numer]}]\n")
+        md.write("## Pytanie #{r[:numer]}\n")
         md.write("`#{r[:pytanie]}`\n")
         md.write("* **#{r[:odp1]}**\n")
         md.write("* #{r[:odp2]}\n")
